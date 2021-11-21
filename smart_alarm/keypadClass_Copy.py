@@ -54,9 +54,18 @@ class keypad:
         global input
         global numTries
         global correctCode
+        
+        global setHour
+        global setMinute
+        global alarmHour
+        global alarmMinute
+        global pressCount
+        MAX_TIME_PRESS  = 2 # Number of numbers to set hour and minute
+
         correctCode = False
         pressed = False
         numTries = 0
+        presscount = 0
 
         GPIO.output(L3, GPIO.HIGH)
 
@@ -68,29 +77,36 @@ class keypad:
         GPIO.output(L1, GPIO.HIGH)
 
         if (not pressed and GPIO.input(C4) ):                       # TODO: We must call this function with flags set for when it checks the password and when it checks for time input
-            if numTries < 5:
-                if self.input == secretCode:
-                    correctCode = True
-                    print("Code correct!")
-                    numTries = 0                                    # Resets number of tries when code is correct
-                    # TODO: Unlock a door, turn a light on, etc.
+            if not correctCode:
+
+                if numTries < 5:
+
+                    if self.input == secretCode:
+                        correctCode = True
+                        print("Code correct!")
+                        numTries = 0                                    # Resets number of tries when code is correct
+                        # TODO: Unlock a door, turn a light on, etc.
+                    else:
+                        print("Incorrect code!")
+                        # TODO: Sound an alarm, send an email, etc.
+                        numTries += 1
+
                 else:
-                    print("Incorrect code!")
-                    # TODO: Sound an alarm, send an email, etc.
-                    numTries += 1
-            else:
-                print("Too many tries.... Wait 5 minutes")
-                time.sleep(60*5)
+                    print("Too many tries.... Wait 5 minutes")
+                    time.sleep(60*5)
+            
+            pressCount = 0 
+
+            # if setHour:                                           # TODO: We must make sure that we only press two keys for the hour ;
+            #     if pressCount < MAX_TIME_PRESS:                   # We can fix this in the readLine function, actually. We should make
+            #         self.alarmHour = ""                           # the flags readingPass, readingHour, readingMinute instead.
+            #         pressCount += 1
+
+
             pressed = True
 
         GPIO.output(L3, GPIO.LOW)
 
-        global setHour
-        global setMinute
-        global alarmHour
-        global alarmMinute
-        global pressCount
-        MAX_TIME_PRESS  = 2
 
         if pressed and not correctCode:
             self.input = ""
@@ -212,7 +228,7 @@ if __name__ == '__main__':
         # invalidCode = (KP.self.input != secretCode)
         # KP.startKeypad()
         KP.inputPassword()
-        hour, minute = KP.setTime()
+        hour, minute = KP.inputTime()
         # KP.startKeypad(reading)
     except KeyboardInterrupt:
         print("\nApplication stopped!")
