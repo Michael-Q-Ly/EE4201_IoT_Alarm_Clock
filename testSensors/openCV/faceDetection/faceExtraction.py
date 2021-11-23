@@ -1,25 +1,35 @@
-from os import read
-from PIL import Image, ImageDraw
+import sys
 import face_recognition as fr
+import cv2
 
-borderColor = (255,0,0)
+BORDER_COLOR     = (0,255,0)
+BORDER_THICKNESS = 2
 
-# Load the jpg file into a numpy array
-image = fr.load_image_file("/home/pi32/Git/EE4201/Face_Recog/Face_Images/Michael/01.jpg")
+""" Set up camera """
+PORT = 0
+cam = cv2.VideoCapture(PORT)
 
-face_locations = fr.face_locations(image)
+if not cam:
+    print( 'Failed VideoCapture: unable to open device {}'.format(PORT) )
+    sys.exit(1)
 
-print( "I found {} face(s) in this photograph.".format( len(face_locations) ) )
+while True:
+    ret, frame  = cam.read()
 
-pil_image   = Image.fromarray(image)
-draw        = ImageDraw.Draw(pil_image)
+    rgb_frame   = frame[ : , : , : : -1]
 
+    face_locations  = fr.face_locations(rgb_frame)
+    face_encodings  = fr.face_encodings(rgb_frame, face_locations)
 
-for face_location in face_locations:
-    # Print the location of each face in this image
-    top, right, bottom, left = face_location
-    print( "A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format( top, left, bottom, right ) )
+    # Loop through each face in this frame of video
+    for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+        cv2.rectangle(frame, (left, top), (right, bottom), BORDER_COLOR, BORDER_THICKNESS)
+        
+    cv2.imshow('Video', frame)
 
-    draw.rectangle( ((left, top), (right, bottom)), outline = borderColor )
-
-pil_image.show()
+    # Press 'q' to quit
+    if cv2.waitKey(1) == ord('q'):
+        break
+    
+cam.release()
+cv2.destroyAllWindows()
