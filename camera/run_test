@@ -1,0 +1,5 @@
+echo "Launching Camera..."
+
+python3 test.py
+
+

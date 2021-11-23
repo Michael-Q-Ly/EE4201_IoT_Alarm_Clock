@@ -1,0 +1,11 @@
+# We will be using a Schedule cloud function consuming Pub/Sub with a pull subscription
+# The function pulls and acknowledges messages from the Pub/Sub topic and imports them
+# into the BigQuery table.
+# On the HCP Cloud Functions console create a new cloud function with HTTP trigger.
+# We will store several settings in environmnet variables to make the functions
+# reusable.
+
+
+flask==1.1.1
+google-cloud-pubsub==1.1.0
+google-cloud-bigquery==1.23.0

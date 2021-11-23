@@ -1,0 +1,13 @@
+# Description: Launches smart_alarm virtual environment
+
+printf "Launching smart_alarm virtual environment venvAlarm...\n"
+
+. ./venvAlarm/bin/activate
+
+printf "You are now in the smart_alarm virtual environment for the following directory: "
+
+pwd
+
+printf "You are using "
+
+python --version

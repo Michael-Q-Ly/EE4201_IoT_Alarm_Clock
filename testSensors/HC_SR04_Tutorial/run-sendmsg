@@ -1,0 +1,11 @@
+# Runs the sendmsg.py program to send distance and time data to GCP
+
+echo "Setting up virtual environment..."
+. ./venv3/bin/activate
+echo "Virtual environment setup!"
+
+echo "Python version:"
+python --version
+
+echo "Sending data to the cloud..."
+python3 sendmsg.py

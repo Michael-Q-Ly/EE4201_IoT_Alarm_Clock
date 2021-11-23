@@ -1,0 +1,11 @@
+# The Adafruit libraries will be used for easily interacting with the sensor and the LCD.
+# The paho-mqtt library is needed to send telemetry data to HCP IoT via the MQTT protocol.
+# For the secure access, we need some additional libraries like pyjwt and cryptography.
+# Install theese requirements with pip (ideally in a Python virutal environment):
+
+Adafruit-CharLCD==1.1.1
+Adafruit-DHT==1.4.0
+RPi.GPIO==0.6.5
+paho-mqtt==1.5.0
+pyjwt==1.7.1
+cryptography==2.8

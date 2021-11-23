@@ -1,0 +1,6 @@
+# List of required installations to use this example:
+# Please use a virtual environment to make it local
+
+# HC_SR04
+pip install google-cloud-pubsub
+pip install RPi.GPIO
