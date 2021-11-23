@@ -2,4 +2,7 @@ camera/facerecog/GoogleVisionTutorials
 Face_Recog/
 set*
 *venv*
+<<<<<<< HEAD
 testSensors/TFLite/
+=======
+>>>>>>> 2f2ad7af62d8a4911d24384ccfcdacb0c3c89d44
