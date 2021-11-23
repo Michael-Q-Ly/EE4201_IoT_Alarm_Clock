@@ -1,0 +1,2 @@
+/etc/dphys-swapfile has had CONF_SWAPSIZE=100 to 2048.
+This is only a temporary change. Please swap it back. 
