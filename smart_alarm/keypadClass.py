@@ -48,7 +48,6 @@ class keypad:
         GPIO.output(L4, state)
 
     def checkSpecialKeys(self):
-    # def checkSpecialKeys(self, reading):
         global input
         global numTries
         global correctCode
@@ -70,9 +69,6 @@ class keypad:
                     correctCode = True
                     print("Code correct!")
                     # TODO: Unlock a door, turn a light on, etc.
-                    # reading = False                                 #TODO: Make reading self.reading
-                    # print(f"reading = {reading} now")
-                    # self.startKeypad(reading)
                     numTries = 0
                 else:
                     print("Incorrect code!")
@@ -155,8 +151,6 @@ if __name__ == '__main__':
     correctCode = False
     try:
         numTries = 0
-        # KP.startKeypad()
         KP.inputPassword()
-        # KP.startKeypad(reading)
     except KeyboardInterrupt:
         print("\nApplication stopped!")
