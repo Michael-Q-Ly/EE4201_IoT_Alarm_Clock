@@ -1,9 +1,9 @@
-# GPIO setup and imports omitted
-# import required libraries
-import RPi.GPIO as GPIO
-import time
 import keypadCode
 
+import RPi.GPIO as GPIO
+import time
+
+""" PINS """
 # These GPIO pins are connected to the keypad
 # change these according to your connections!
 L1 = 12
@@ -16,10 +16,7 @@ C2 = 6
 C3 = 13
 C4 = 19
 
-keypadPressed = -1
-secretCode = keypadCode.userPass
-input = ""
-
+""" PIN SETUP """
 # Initialize the GPIO pins
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -30,116 +27,208 @@ GPIO.setup(L3, GPIO.OUT)
 GPIO.setup(L4, GPIO.OUT)
 
 # Make sure to configure the input pins to use the internal pull-down resistors
-
 GPIO.setup(C1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(C4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-# This callback registers the key that was pressed
-# if no other key is currently pressed
-def keypadCallback(channel):
-    global keypadPressed
-    if keypadPressed == -1:
-        keypadPressed = channel
 
-# Detect the rising edges on the column lines of the
-# keypad. This way, we can detect if the user presses
-# a button when we send a pulse.
-GPIO.add_event_detect(C1, GPIO.RISING, callback=keypadCallback)
-GPIO.add_event_detect(C2, GPIO.RISING, callback=keypadCallback)
-GPIO.add_event_detect(C3, GPIO.RISING, callback=keypadCallback)
-GPIO.add_event_detect(C4, GPIO.RISING, callback=keypadCallback)
+""" KEYPAD CLASS """
+class keypad:
+    def __init__(self, p, s, i):
+        self.pressed    = p
+        self.secretCode = s
+        self.input      = i
 
-# Sets all lines to a specific state. This is a helper
-# for detecting when the user releases a button
-def setAllLines(state):
-    GPIO.output(L1, state)
-    GPIO.output(L2, state)
-    GPIO.output(L3, state)
-    GPIO.output(L4, state)
+    def kpCallback(self, channel):                                                      # Channel = the key pressed
+        if self.pressed == -1:
+            self.pressed = channel
 
-def checkSpecialKeys():
-    global input
-    # global validPassword    
-    pressed = False
+    def setAllLines(self, state):                                                       # Set the state of each row/line
+        GPIO.output(L1, state)
+        GPIO.output(L2, state)
+        GPIO.output(L3, state)
+        GPIO.output(L4, state)
 
-    GPIO.output(L3, GPIO.HIGH)
+    def checkSpecialKeys(self):                                                         # Check special keys such as 'Enter', 'Clr', and 'Input'
+        global input
+        global numTries
+        global correctCode
+        
+        global setHour
+        global setMinute
+        global alarmHour
+        global alarmMinute
+        global pressCount
+        MAX_TIME_PRESS  = 2 # Number of numbers to set hour and minute
 
-    if (GPIO.input(C4) == 1):
-        print("Input reset!");
-        pressed = True
+        correctCode = False
+        pressed = False
+        numTries = 0
+        presscount = 0
 
-    GPIO.output(L3, GPIO.LOW)
-    GPIO.output(L1, GPIO.HIGH)
+        GPIO.output(L3, GPIO.HIGH)
 
-    if (not pressed and GPIO.input(C4) == 1):
-        if input == secretCode:
-            print("Code correct!")
-            # validPassword = True
-            # TODO: Unlock a door, turn a light on, etc.
+        if (GPIO.input(C4) == 1):
+            print("Input reset!");
+            pressed = True
 
-        else:
-            print("Incorrect code!")
-            # TODO: Sound an alarm, send an email, etc.
-            # validPassword = False
-        pressed = True
+        GPIO.output(L3, GPIO.LOW)
+        GPIO.output(L1, GPIO.HIGH)
 
-    GPIO.output(L3, GPIO.LOW)
+        if (not pressed and GPIO.input(C4) ):                       # TODO: We must call this function with flags set for when it checks the password and when it checks for time input
+            if not correctCode:
 
-    if pressed:
-        input = ""
+                if numTries < 5:
 
-    return pressed
+                    if self.input == secretCode:
+                        correctCode = True
+                        print("Code correct!")
+                        numTries = 0                                    # Resets number of tries when code is correct
+                        # TODO: Unlock a door, turn a light on, etc.
+                    else:
+                        print("Incorrect code!")
+                        # TODO: Sound an alarm, send an email, etc.
+                        numTries += 1
 
-# The readLine function implements the procedure discussed in the article
-# It sends out a single pulse to one of the rows of the keypad
-# and then checks each column for changes
-# If it detects a change, the user pressed the button that connects the given line
-# to the detected column
-def readLine(line, characters):
-    global input
-    # We have to send a pulse on each line to
-    # detect button presses
-    GPIO.output(line, GPIO.HIGH)
-    if(GPIO.input(C1) == 1):
-        # print(characters[0])
-        input += characters[0]
-    if(GPIO.input(C2) == 1):
-        # print(characters[1])
-        input += characters[1]
-    if(GPIO.input(C3) == 1):
-        # print(characters[2])
-        input += characters[2]
-    if(GPIO.input(C4) == 1):
-        # print(characters[3])
-        input += characters[3]
-    GPIO.output(line, GPIO.LOW)
-
-def getKeyPress(reading):
-    try:
-        # while True:
-        while reading:
-            #If a button was previously pressed, check
-            # whether the user has released it yet
-            if keypadPressed != -1:
-                setAllLines(GPIO.HIGH)
-                if not( GPIO.input(keypadPressed) ):
-                    keypadPressed = -1
                 else:
-                    time.sleep(0.1)
+                    print("Too many tries.... Wait 5 minutes")
+                    time.sleep(60*5)
+            
+            pressCount = 0 
+
+            # if setHour:                                           # TODO: We must make sure that we only press two keys for the hour ;
+            #     if pressCount < MAX_TIME_PRESS:                   # We can fix this in the readLine function, actually. We should make
+            #         self.alarmHour = ""                           # the flags readingPass, readingHour, readingMinute instead.
+            #         pressCount += 1
+
+
+            pressed = True
+
+        GPIO.output(L3, GPIO.LOW)
+
+
+        if pressed and not correctCode:
+            self.input = ""
+
+        elif pressed and setHour:
+            if pressCount < MAX_TIME_PRESS:
+                self.alarmHour = ""
+                pressCount += 1
             else:
-                if not( checkSpecialKeys() ):
-                    # call the readLine function for each row of the keypad
-                    readLine(L1, ["1","2","3","A"])
-                    readLine(L2, ["4","5","6","B"])
-                    readLine(L3, ["7","8","9","C"])
-                    readLine(L4, ["*","0","#","D"])
-                    time.sleep(0.1)
-                else:
-                    time.sleep(0.1)
-        #     if validPassword:
-        #         reading = False
-        # return reading
+                setHour = False
+
+        elif pressed and setMinute:
+            if pressCount < MAX_TIME_PRESS:
+                self.alarmMinute = ""
+                pressCount += 1
+            else:
+                setMinute = False
+
+        return pressed
+
+    def readLine(self, line, characters):                                                                       # TODO: Fix this code to be conditional and append to input, hour,
+        # global input                                                                                          # or minute, depending on which function is called
+        # We have to send a pulse on each line to
+        # detect button presses
+        GPIO.output(line, GPIO.HIGH)
+        if(GPIO.input(C1) == 1):
+            print(characters[0])
+            self.input += characters[0]
+        if(GPIO.input(C2) == 1):
+            print(characters[1])
+            self.input += characters[1]
+        if(GPIO.input(C3) == 1):
+            print(characters[2])
+            self.input += characters[2]
+        if(GPIO.input(C4) == 1):
+            print(characters[3])
+            self.input += characters[3]
+        GPIO.output(line, GPIO.LOW)
+
+    # def startKeypad(self, reading):
+    def startKeypad(self):
+        if self.pressed != -1:
+            self.setAllLines(GPIO.HIGH)
+            if not( GPIO.input(self.pressed) ):
+                self.pressed = -1
+            else:
+                time.sleep(0.1)
+        else:
+            if not( self.checkSpecialKeys() ):
+                # call the readLine function for each row of the keypad
+                self.readLine(L1, ["1","2","3","A"])
+                self.readLine(L2, ["4","5","6","B"])
+                self.readLine(L3, ["7","8","9","C"])
+                self.readLine(L4, ["*","0","#","D"])
+                time.sleep(0.1)
+            else:
+                time.sleep(0.1)
+
+    def inputPassword(self):
+        global unlocked
+        global setHour
+        while not correctCode:
+            self.startKeypad()
+        setHour = True
+        print("Input your alarm time:")
+        self.inputTime()
+    
+    def inputTime(self):
+        global pressCount
+        global setHour
+        global setMinute
+        
+        while setHour:
+            self.startKeypad()
+        pressCount = 0
+        #These two flags need to be set in checkSpecialKeys or in inputPassword
+        # Fixed it in checkSpecialKeys
+        # setHour = False
+        # setMinute = True
+        while setMinute:
+            self.startKeypad()
+
+        print( f'Time is {alarmHour}:{alarmMinute}' )
+
+########################################################################################################################################################################################################
+
+""" FLAGS """
+correctCode     = False
+unlocked        = False
+setHour         = False
+setMinute       = False
+pressCount      = 0
+
+keypadPressed   = -1
+secretCode      = keypadCode.userPass
+input           = ''
+alarmHour       = ''
+alarmMinute     = ''
+
+KP = keypad(keypadPressed, secretCode, input)                                                                       # Create keypad object
+
+########################################################################################################################################################################################################
+
+""" ISRs """
+GPIO.add_event_detect(C1, GPIO.RISING, callback = KP.kpCallback)
+GPIO.add_event_detect(C2, GPIO.RISING, callback = KP.kpCallback)
+GPIO.add_event_detect(C3, GPIO.RISING, callback = KP.kpCallback)
+GPIO.add_event_detect(C4, GPIO.RISING, callback = KP.kpCallback)
+
+
+########################################################################################################################################################################################################
+
+""" TEST CODE """
+if __name__ == '__main__':
+    correctCode = False
+    # reading = True
+    try:
+        numTries = 0
+        # invalidCode = (KP.self.input != secretCode)
+        # KP.startKeypad()
+        KP.inputPassword()
+        hour, minute = KP.inputTime()
+        # KP.startKeypad(reading)
     except KeyboardInterrupt:
         print("\nApplication stopped!")
