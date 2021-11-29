@@ -3,3 +3,4 @@ Face_Recog/
 set*
 *venv*
 testSensors/TFLite/
+smart_alarm/emailCredentials.py
