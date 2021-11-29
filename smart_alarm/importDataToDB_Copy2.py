@@ -32,7 +32,6 @@ COUNTER_DELAY           = (float)(1.00)
 ####################################################################################################################################################################################################
 
 """ FLAGS """
-INCORRECT_READ          = (bool)(False) # TODO: Exception handling. If incorrect read, set this flag to true, and set it to false for every good read
 PRINT_TO_CONSOLE        = (bool)(True)
 ALARM_ON                = (bool)(True)
 USE_LCD                 = (bool)(True)
@@ -70,17 +69,13 @@ def getData():
     """ Data Collection """
     validData = (bool)(False)
     lock.acquire()
-    # while not validData and errorCount < 5:
     while not validData:
         try:
             timenow                                 = datetime.datetime.now()                                           # Get Time
             distance                                = round(float(distanceData.FindDistance()),2)                       # Get Distance
             temperature_c, temperature_f, humidity  = humidityTemperatureData.getTempandHumidity()                      # Get Temperature in C and F, and humidity
             validData = True
-            # if validData:
-            #     errorCount = 0
         except RuntimeError as error:
-            # errorCount += 1
             # Errors happen fairly often, DHT's are hard to read, just keep going
             print(f'\n\n============================================================  {error.args[0]}  ============================================================\n\n')
             validData = False
