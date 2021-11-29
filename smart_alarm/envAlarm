@@ -2,7 +2,7 @@
 
 printf "Launching smart_alarm virtual environment venvAlarm...\n"
 
-. ./venvAlarm/bin/activate
+. /home/pi32/branchMQL/venvAlarm/bin/activate
 
 printf "You are now in the smart_alarm virtual environment for the following directory: "
 

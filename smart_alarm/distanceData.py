@@ -64,15 +64,6 @@ def FindDistance():
   
     return distance
 
-
-
-
-
-
-
-
-
-
 def showData(timenow, distance):
     """ Distance Data (HC_SR04) """
 

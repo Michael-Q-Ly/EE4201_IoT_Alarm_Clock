@@ -1,11 +1,12 @@
+import emailCredentials
 import smtplib
 import humidityTemperatureData
 
 def sendDistanceError(distance, numSounds):
-    smtpUser    = 'Rasp.Pi4201@Gmail.com'
-    smtpPass    = 'EE42013mb3d!'
+    smtpUser    = emailCredentials.user
+    smtpPass    = emailCredentials.password
 
-    toAdd       = 'Rasp.Pi4201@Gmail.com'
+    toAdd       = emailCredentials.toAdd
     fromAdd     = smtpUser
 
     # temperature_c, temperature_f, humidity = humidityTemperatureData.getTempandHumidity()

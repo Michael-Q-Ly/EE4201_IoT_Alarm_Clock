@@ -35,10 +35,12 @@ GPIO.setup(C4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 """ KEYPAD CLASS """
 class keypad:
-    def __init__(self, p, s, i):
-        self.pressed    = p
-        self.secretCode = s
-        self.input      = i
+    def __init__(self, p, s, i, h, m):
+        self.pressed        = p
+        self.secretCode     = s
+        self.input          = i
+        self.alarmHour      = h
+        self.alarmMinute    = m
 
     def kpCallback(self, channel):                                                      # Channel = the key pressed
         if self.pressed == -1:
@@ -77,11 +79,12 @@ class keypad:
         GPIO.output(L1, GPIO.HIGH)
 
         if (not pressed and GPIO.input(C4) ):                       # TODO: We must call this function with flags set for when it checks the password and when it checks for time input
+            
             if not correctCode:
 
                 if numTries < 5:
 
-                    if self.input == secretCode:
+                    if self.input == SECRET_CODE:
                         correctCode = True
                         print("Code correct!")
                         numTries = 0                                    # Resets number of tries when code is correct
@@ -94,6 +97,12 @@ class keypad:
                 else:
                     print("Too many tries.... Wait 5 minutes")
                     time.sleep(60*5)
+
+            if setHour:
+                print('Hour is {}'.format(self.alarmHour))
+
+            if setMinute:
+                print('Minute is {self.alarmMinute}')
             
             pressCount = 0 
 
@@ -132,19 +141,48 @@ class keypad:
         # We have to send a pulse on each line to
         # detect button presses
         GPIO.output(line, GPIO.HIGH)
-        if(GPIO.input(C1) == 1):
-            print(characters[0])
-            self.input += characters[0]
-        if(GPIO.input(C2) == 1):
-            print(characters[1])
-            self.input += characters[1]
-        if(GPIO.input(C3) == 1):
-            print(characters[2])
-            self.input += characters[2]
-        if(GPIO.input(C4) == 1):
-            print(characters[3])
-            self.input += characters[3]
-        GPIO.output(line, GPIO.LOW)
+        if not correctCode:
+            if(GPIO.input(C1) == 1):
+                print(characters[0])
+                self.input += characters[0]
+            if(GPIO.input(C2) == 1):
+                print(characters[1])
+                self.input += characters[1]
+            if(GPIO.input(C3) == 1):
+                print(characters[2])
+                self.input += characters[2]
+            if(GPIO.input(C4) == 1):
+                print(characters[3])
+                self.input += characters[3]
+            GPIO.output(line, GPIO.LOW)
+        elif setHour:
+            if(GPIO.input(C1) == 1):
+                print(characters[0])
+                self.alarmHour += characters[0]
+            if(GPIO.input(C2) == 1):
+                print(characters[1])
+                self.alarmHour += characters[1]
+            if(GPIO.input(C3) == 1):
+                print(characters[2])
+                self.alarmHour += characters[2]
+            if(GPIO.input(C4) == 1):
+                print(characters[3])
+                self.alarmHour += characters[3]
+            GPIO.output(line, GPIO.LOW)
+        elif setMinute:
+            if(GPIO.input(C1) == 1):
+                print(characters[0])
+                self.alarmMinute += characters[0]
+            if(GPIO.input(C2) == 1):
+                print(characters[1])
+                self.alarmMinute += characters[1]
+            if(GPIO.input(C3) == 1):
+                print(characters[2])
+                self.alarmMinute += characters[2]
+            if(GPIO.input(C4) == 1):
+                print(characters[3])
+                self.alarmMinute += characters[3]
+            GPIO.output(line, GPIO.LOW)
 
     # def startKeypad(self, reading):
     def startKeypad(self):
@@ -200,13 +238,16 @@ setHour         = False
 setMinute       = False
 pressCount      = 0
 
+""" Constants """ 
+SECRET_CODE      = keypadCode.userPass
+
+"""" Variables """
 keypadPressed   = -1
-secretCode      = keypadCode.userPass
 input           = ''
 alarmHour       = ''
 alarmMinute     = ''
 
-KP = keypad(keypadPressed, secretCode, input)                                                                       # Create keypad object
+KP = keypad(keypadPressed, SECRET_CODE, input, alarmHour, alarmMinute)                                                                       # Create keypad object
 
 ########################################################################################################################################################################################################
 
