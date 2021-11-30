@@ -1,5 +1,6 @@
 camera/facerecog/GoogleVisionTutorials
-Face_Recog/
+Face_Recog/Face_Images/
+Face_Recog/openCV/dataset/
 set*
 *venv*
 testSensors/TFLite/
