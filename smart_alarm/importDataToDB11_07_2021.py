@@ -25,7 +25,7 @@ ERROR_DELAY             = (float)(0.5)
 SECONDS_TO_MINUTES      = (float)(60.0)
 MINUTES_TO_HOURS        = (float)(60.0)
 NUM_HOURS               = (float)(1.0)
-SEND_TO_CLOUD_DELAY_HR   = (float)( SECONDS_TO_MINUTES * MINUTES_TO_HOURS * NUM_HOURS )
+SEND_TO_CLOUD_DELAY_HR  = (float)( SECONDS_TO_MINUTES * MINUTES_TO_HOURS * NUM_HOURS )
 # SEND_TO_CLOUD_DELAY_HR  = (float)(5.0)                                                                                # DEBUG - Delay only 5 seconds to see output is working properly
 TIME_COUNTER_DELAY      = (float)(1.00)
 
@@ -34,7 +34,7 @@ TIME_COUNTER_DELAY      = (float)(1.00)
 """ FLAGS """
 
 PRINT_TO_CONSOLE        = (bool)(True)
-ALARM_ON                = (bool)(True)
+USE_ALARM               = (bool)(True)
 USE_LCD                 = (bool)(True)
 USE_CLOUD               = (bool)(False)
 ####################################################################################################################################################################################################
@@ -150,17 +150,18 @@ while True:
 
 
     """ Alarm On """
-    if ALARM_ON:
-        print('Alarm is ON\n')
-        alarmThread = Thread( target = alarm.startAlarm, args = () )
-        alarmThread.daemon = True
-        alarmThread.start()
+    if USE_ALARM:
+        print('Alarm is set...\n')
+        # alarmThread = Thread( target = alarm.startAlarm, args = () )
+        # alarmThread.daemon = True
+        # alarmThread.start()
+        alarm.startAlarm()
     else:
         print('Alarm is currently OFF')
     
     
     if USE_LCD:
         displayThread.join()
-    if ALARM_ON:
-        alarmThread.join()
+    # if USE_ALARM:
+        # alarmThread.join()
     print('====================================================================================================================================================')
