@@ -1,0 +1,5 @@
+printf "Launching face recognition virtual environment...\n"
+source /home/pi32/Git/EE4201/Face_Recog/venvRecog/bin/activate
+printf "You are now in the facial recognition virtual environment!\n"
+printf "You are using "
+python --version
