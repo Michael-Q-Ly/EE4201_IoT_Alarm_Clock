@@ -3,7 +3,7 @@
 
 printf "Launching smart_alarm virtual environment venvAlarm...\n"
 
-. /home/pi32/branchMQL/venvAlarm/bin/activate
+source /home/pi32/Git/EE4201/smart_alarm/venvAlarm/bin/activate
 
 printf "You are now in the smart_alarm virtual environment for the following directory: "
 
@@ -15,4 +15,4 @@ python --version
 
 printf "Launching smart alarm...\n\n"
 
-python3 /home/pi32/branchMQL/alarm.py
+python3 /home/pi32/Git/EE4201/smart_alarm/alarm.py

@@ -36,7 +36,7 @@ TIME_COUNTER_DELAY      = (float)(1.00)
 PRINT_TO_CONSOLE        = (bool)(True)
 # USE_ALARM               = (bool)(True)
 USE_LCD                 = (bool)(True)
-USE_CLOUD               = (bool)(True)
+USE_CLOUD               = (bool)(False)
 ####################################################################################################################################################################################################
 
 lock = Lock()   # Mutex to make sure data is retrieved before outputting to LCD screen

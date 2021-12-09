@@ -14,14 +14,13 @@ ALARM_ON            = (bool)(False)
 SCHEDULE_DELAY_S    = 2
 SLEEP_DELAY         = 3
 TURN_OFF_DISTANCE   = (float)(50.0)
-ALARM_HR            = '13'
-ALARM_MIN           = '55'
+ALARM_HR            = '09'
+ALARM_MIN           = '30'
 
 
 # .wav file to open with subprocess
 pianoAlarm  = 'aplay /home/pi32/Music/emotional-piano-melody_124bpm_A_major.wav'
 schoolAlarm = 'aplay /home/pi32/Music/SchoolBell.wav'
-# validPassword = (bool)(False)
 
 def job():
     global ALARM_ON
@@ -33,8 +32,7 @@ def startAlarm():
     numSounds = 0
 
     # schedule.every(3).seconds.do(job)                                             # Debug code to check if BT speaker is connected
-    schedule.every().day.at(f'{ALARM_HR}:{ALARM_MIN}').do(job)                      # TODO: Use keypad to set a new alarm time and require user password
-    # schedule.every().thursday.at('06:32').do(job)                                 # TODO: Use keypad to set a new alarm time and require user password
+    schedule.every().Tuesday.at(f'{ALARM_HR}:{ALARM_MIN}').do(job)                      # TODO: Use keypad to set a new alarm time and require user password
     # schedule.every().thursday.at(f'{kp.hourSet}:{kp.minuteSet}').do(job)
 
     global ALARM_ON
@@ -66,15 +64,3 @@ def startAlarm():
 if __name__ == "__main__":
     print(f'Setting alarm for {ALARM_HR}:{ALARM_MIN}')
     startAlarm()
-
-#def startAlarm():
-# schedule.every(1).seconds.do(job)                                                 # Debug code to check if BT speaker is connected
-# schedule.every().thursday.at('06:32').do(job)
-    # schedule.every().day.at('17:05').do(job)                                      # TODO: Make this a function and call it in a thread
-    # schedule.every().day.at(f'{keypad.hour}:{keypad.minute}').do(job)             # TODO: Receive arguments from the keypad to select WHEN to turn on alarm
-                                                                                    # TODO: Make a conditional statement in the main program to turn off the alarm
-                                                                                    #       and then actuate something like an email prompting that you woke up today
-
-
-# def startAlarm(validPassword):                                                    # TODO: shared memory with a multithread; must use a mutex / lock
-# def startAlarm(distance, stuff):
