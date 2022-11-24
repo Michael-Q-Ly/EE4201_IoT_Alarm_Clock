@@ -1,11 +1,8 @@
-import database_credentials
-
 import RPi.GPIO as GPIO
 import board
 import adafruit_dht
 import time
 import datetime
-import mariadb
 import sys
 
 # Settings for database connection
@@ -26,23 +23,6 @@ GPIO.setup(GPIO_ECHO, GPIO.IN)
 
 SPEED_OF_SOUND = 34300                                              # The speed of sound in cm/s
 TABLE_NAME = 'distance_data'
-
-
-# Connect to correct Database
-try:
-	myDB = mariadb.connect(
-		host 		= database_credentials.myHost ,
-		user 		= database_credentials.myUser ,
-		password	= database_credentials.myPassword ,
-		database 	= database_credentials.myDatabase
-	)
-except mariadb.Error as e:
-	print(f"Error connecting to MariaDB Platform: {e}")
-	sys.exit(1)
-	
-# Get cursor
-myCursor = myDB.cursor()
-
 
 def FindDistance():
     GPIO.output(GPIO_TRIGGER, True)                                 # Send a signal out for 0.1 ms
@@ -77,11 +57,3 @@ def showData(timenow, distance):
     print('Time     :', timenow.strftime("%a, %B %d, %Y %H:%M:%S"))
     print('Distance : {:.2f} cm\n'.format(distance) )
     # print(data)
-
-
-def sendData(timenow, distance):
-    sql  		= f'INSERT INTO {TABLE_NAME} (time, distance) VALUES (%s, %s)'
-    val			= (timenow, distance)
-
-    myCursor.execute(sql, val)
-    myDB.commit()
