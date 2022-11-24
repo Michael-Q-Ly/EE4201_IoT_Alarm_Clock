@@ -12,14 +12,11 @@ Dependencies:   adafruit_dht
                 board
 """
 
-import database_credentials
-
 import adafruit_dht
 import time
 import RPi.GPIO as GPIO
 import board
 import datetime
-import mariadb
 import sys
 
 ERROR_DELAY = (float)(2.0)
@@ -31,29 +28,6 @@ dhtDevice = adafruit_dht.DHT22(board.D26, use_pulseio=False)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(dht_sensor_port, GPIO.IN)
-
-
-
-
-# Connect to correct Database
-try:
-	myDB = mariadb.connect(
-		host 		= database_credentials.myHost ,
-		user 		= database_credentials.myUser ,
-		password	= database_credentials.myPassword ,
-		database 	= database_credentials.myDatabase
-	)
-except mariadb.Error as e:
-	print(f"Error connecting to MariaDB Platform: {e}")
-	sys.exit(1)
-	
-# Get cursor
-myCursor = myDB.cursor()
-
-
-
-
-
 
 # Routine to insert temperature records into the dht22_data table
 def getTempandHumidity():
@@ -89,10 +63,3 @@ def showData(timenow, temperature_c, temperature_f, humidity):
     print('Time     :', timenow.strftime("%a, %B %d, %Y %H:%M:%S"))
     print('Temp     : {:.1f} C / {:.1f} F'.format(temperature_c, temperature_f))
     print('Humidity : {:.1f}%\n'.format(humidity))
-
-def sendData(timenow, temperature_c, temperature_f, humidity):
-    sql  		= f"INSERT INTO {TABLE_NAME} (time, temperatureC, temperatureF, humidity) VALUES (%s, %s, %s, %s)"
-    val			= (timenow, temperature_c, temperature_f, humidity)
-
-    myCursor.execute(sql, val)
-    myDB.commit()
