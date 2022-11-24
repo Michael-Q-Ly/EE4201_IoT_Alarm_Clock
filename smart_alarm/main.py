@@ -1,21 +1,12 @@
 # import database_credentials
 import displayData
 import distanceData
-import emailData
 import humidityTemperatureData
-# import alarm
-# import motionData
 
-# import mariadb
 import datetime
 import time
-# import sys
-# import smtplib
 from signal import signal, SIGTERM, SIGHUP, pause
 from rpi_lcd import LCD
-from threading import Thread, Lock
-import subprocess
-import schedule
 ####################################################################################################################################################################################################
 
 """ CONSTANTS """
