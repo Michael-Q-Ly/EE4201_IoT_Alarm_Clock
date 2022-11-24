@@ -3,7 +3,7 @@
 
 printf "Launching smart_alarm virtual environment venvAlarm...\n"
 
-. /home/pi32/branchMQL/venvAlarm/bin/activate
+. /home/mqly/EE4201_IoT_Alarm_Clock/smart_alarm
 
 printf "You are now in the smart_alarm virtual environment for the following directory: "
 
@@ -15,8 +15,6 @@ python --version
 
 printf "Launching smart alarm...\n\n"
 
-# python3 /home/pi32/branchMQL/importDataToDB.py
-# python3 /home/pi32/branchMQL/importDataToDB11_03_2021.py
-python3 /home/pi32/branchMQL/importDataToDB_Copy2.py
+python3 /home/mqly/EE4201_IoT_Alarm_Clock/smart_alarm/main.py
 
 printf "\nNo longer sending local data...\n"
